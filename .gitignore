@@ -5,12 +5,14 @@ yarn.lock
 
 # TypeScript build artifacts
 dist/
+build/
 *.tsbuildinfo
 
 # Payload/Next.js output & caches
 .next/
 out/
-payloadbuild/  # adjust if you have payload build output
+payload-types.ts
+.payload/
 
 # Env files
 .env

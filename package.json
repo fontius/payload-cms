@@ -1,34 +1,32 @@
 {
   "name": "payload-cms",
   "version": "1.0.0",
-  "description": "",
+  "description": "A Payload CMS project",
   "main": "dist/server.js",
   "type": "module",
   "scripts": {
     "dev": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts nodemon",
-    "build": "npm run copyfiles && tsc && cross-env PAYLOAD_CONFIG_PATH=dist/payload.config.js payload build",
+    "build": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload build",
     "serve": "cross-env PAYLOAD_CONFIG_PATH=dist/payload.config.js NODE_ENV=production node dist/server.js",
-    "copyfiles": "copyfiles -u 1 \"src/**/*.{json,css,scss,ttf,woff,woff2,eot,svg,jpg,png}\" dist/",
-    "generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@payloadcms/bundler-webpack": "^3.44.0",
-    "@payloadcms/db-mongodb": "^3.44.0",
-    "@payloadcms/richtext-slate": "^3.44.0",
+    "@payloadcms/bundler-vite": "^1.1.2",
+    "@payloadcms/db-mongodb": "^3.0.0",
+    "@payloadcms/richtext-slate": "^3.0.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "payload": "^3.44.0"
+    "payload": "^3.0.0",
+    "react": "^19.0.0-rc-f994737d14-20240522",
+    "react-dom": "^19.0.0-rc-f994737d14-20240522"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
     "cross-env": "^7.0.3",
-    "copyfiles": "^2.4.1",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.5.3"
   }
 }

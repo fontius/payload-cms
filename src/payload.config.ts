@@ -1,28 +1,43 @@
 import { buildConfig } from 'payload/config';
 import path from 'path';
-import { fileURLToPath } from 'url'; // Added for ESM __dirname
+import { fileURLToPath } from 'url';
 import { mongooseAdapter } from '@payloadcms/db-mongodb';
 import { slateEditor } from '@payloadcms/richtext-slate';
-import { webpackBundler } from '@payloadcms/bundler-webpack';
+import { viteBundler } from '@payloadcms/bundler-vite';
 
-import Users from './collections/Users.js'; // Added .js extension
-import Posts from './collections/Posts.js'; // Added .js extension
+// Collections
+import Users from './collections/Users.js';
+import Posts from './collections/Posts.js';
 
-// Recreate __dirname for ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// A helper function to create a clean array of allowed origins
+const generateAllowedOrigins = () => {
+  const allowed = [
+    process.env.PAYLOAD_PUBLIC_SERVER_URL,
+    process.env.FRONTEND_URL,
+  ];
+
+  // For local development, always allow the default ports
+  if (process.env.NODE_ENV !== 'production') {
+    allowed.push('http://localhost:3000'); // CMS itself
+    allowed.push('http://localhost:3001'); // Common Next.js port
+  }
+
+  return allowed.filter(Boolean) as string[]; // Filter out undefined values
+};
+
+const allowedOrigins = generateAllowedOrigins();
 
 export default buildConfig({
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000',
   admin: {
     user: Users.slug,
-    bundler: webpackBundler(),
+    bundler: viteBundler(),
   },
   editor: slateEditor({}),
-  collections: [
-    Users,
-    Posts,
-  ],
+  collections: [Users, Posts],
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },
@@ -32,11 +47,7 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.DATABASE_URI,
   }),
-  // Whitelist your frontend URL to make requests from the browser
-  cors: [process.env.FRONTEND_URL, process.env.PAYLOAD_PUBLIC_SERVER_URL]
-    .filter(Boolean)
-    .concat(['http://localhost:3001']), // Allow local Next.js dev
-  csrf: [process.env.FRONTEND_URL, process.env.PAYLOAD_PUBLIC_SERVER_URL]
-    .filter(Boolean)
-    .concat(['http://localhost:3001']), // Allow local Next.js dev
+  // Whitelist allowed origins for requests from browser
+  cors: allowedOrigins,
+  csrf: allowedOrigins,
 });

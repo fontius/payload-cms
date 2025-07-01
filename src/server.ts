@@ -2,9 +2,8 @@ import express from 'express';
 import payload from 'payload';
 import dotenv from 'dotenv';
 import path from 'path';
-import { fileURLToPath } from 'url'; // Added for ESM __dirname
+import { fileURLToPath } from 'url';
 
-// Recreate __dirname for ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -37,7 +36,10 @@ const start = async () => {
     },
   });
 
-  app.listen(process.env.PORT || 3000);
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => {
+    payload.logger.info(`Server listening on port ${port}`);
+  });
 };
 
 start();
